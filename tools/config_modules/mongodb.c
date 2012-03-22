@@ -437,6 +437,7 @@ tns_value_t *config_load_dir(int dir_id)
     bson_append_int(fields, "index_file", 1);
     bson_append_int(fields, "default_ctype", 1);
     bson_append_int(fields, "cache_ttl", 1);
+    bson_append_int(fields, "cache_control", 1);
     bson_finish(fields);
 
     bstring collection = bfromcstr("directory");

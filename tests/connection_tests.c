@@ -92,7 +92,8 @@ char * all_tests() {
             bfromcstr("tests/"),
             bfromcstr("index.html"),
             bfromcstr("text/plain"),
-            0);
+            0,
+            bfromcstr("no-cache"));
 
     Host_add_backend(zedshaw_com, bfromcstr("/tests"), BACKEND_DIR, tests);
 

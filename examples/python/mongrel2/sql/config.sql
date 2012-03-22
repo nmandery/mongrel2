@@ -44,7 +44,8 @@ CREATE TABLE directory (id INTEGER PRIMARY KEY,
     base TEXT,
     index_file TEXT,
     default_ctype TEXT,
-    cache_ttl INTEGER DEFAULT 0);
+    cache_ttl INTEGER DEFAULT 0,
+    cache_control TEXT DEFAULT 'no-cache');
 
 CREATE TABLE route (id INTEGER PRIMARY KEY,
     path TEXT,

@@ -80,7 +80,8 @@ struct tagbstring CONFIG_SCHEMA = bsStatic(
 "   base TEXT,"
 "   index_file TEXT,"
 "   default_ctype TEXT,"
-"   cache_ttl INTEGER DEFAULT 0);"
+"   cache_ttl INTEGER DEFAULT 0,"
+"   cache_control TEXT DEFAULT 'no-cache');"
 "\n"
 "CREATE TABLE route (id INTEGER PRIMARY KEY,\n"
 "    path TEXT,\n"
@@ -132,6 +133,7 @@ struct tagbstring MIMETYPE_SQL = bsStatic("DELETE from mimetype where extension=
 
 struct tagbstring DIR_SQL = bsStatic("INSERT INTO directory (base, index_file, default_ctype) VALUES (%Q, %Q, %Q);");
 struct tagbstring DIR_CACHE_TTL_SQL = bsStatic("UPDATE directory SET cache_ttl=%Q WHERE id=last_insert_rowid();");
+struct tagbstring DIR_CACHE_CONTROL_SQL = bsStatic("UPDATE directory SET cache_control=%Q WHERE id=last_insert_rowid();");
 
 struct tagbstring PROXY_SQL = bsStatic("INSERT INTO proxy (addr, port) VALUES (%Q, %Q);");
 

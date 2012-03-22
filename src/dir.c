@@ -56,6 +56,7 @@ const char *RESPONSE_FORMAT = "HTTP/1.1 200 OK\r\n"
     "Content-Type: %s\r\n"
     "Content-Length: %llu\r\n"
     "Last-Modified: %s\r\n"
+    "Cache-Control: %s\r\n"
     "ETag: %s\r\n"
     "Server: " VERSION
     "\r\n\r\n";
@@ -101,7 +102,7 @@ error:
 
 
 
-FileRecord *Dir_find_file(bstring path, bstring default_type)
+FileRecord *Dir_find_file(bstring path, bstring default_type, bstring cache_control)
 {
     FileRecord *fr = calloc(sizeof(FileRecord), 1);
 
@@ -143,6 +144,7 @@ FileRecord *Dir_find_file(bstring path, bstring default_type)
         bdata(fr->content_type),
         fr->file_size,
         bdata(fr->last_mod),
+        bdata(cache_control),
         bdata(fr->etag));
 
     check(fr->header != NULL, "Failed to create response header.");
@@ -181,7 +183,7 @@ error:
 }
 
 
-Dir *Dir_create(bstring base, bstring index_file, bstring default_ctype, int cache_ttl)
+Dir *Dir_create(bstring base, bstring index_file, bstring default_ctype, int cache_ttl, bstring cache_control)
 {
     Dir *dir = calloc(sizeof(Dir), 1);
     check_mem(dir);
@@ -202,6 +204,7 @@ Dir *Dir_create(bstring base, bstring index_file, bstring default_ctype, int cac
 
     dir->index_file = bstrcpy(index_file);
     dir->default_ctype = bstrcpy(default_ctype);
+    dir->cache_control = bstrcpy(cache_control);
 
     dir->fr_cache = Cache_create(FR_CACHE_SIZE, filerecord_cache_lookup,
                                  filerecord_cache_evict);
@@ -228,6 +231,7 @@ void Dir_destroy(Dir *dir)
         bdestroy(dir->index_file);
         bdestroy(dir->normalized_base);
         bdestroy(dir->default_ctype);
+        bdestroy(dir->cache_control);
         if(dir->fr_cache) Cache_destroy(dir->fr_cache);
         free(dir);
     }
@@ -383,7 +387,7 @@ FileRecord *Dir_resolve_file(Dir *dir, bstring prefix, bstring path)
             bdata(target), bdata(dir->base));
 
     // the FileRecord now owns the target
-    file = Dir_find_file(target, dir->default_ctype);
+    file = Dir_find_file(target, dir->default_ctype, dir->cache_control);
     check_debug(file, "Error opening file: %s", bdata(target));
 
     // Increment the user count because we're adding it to the cache

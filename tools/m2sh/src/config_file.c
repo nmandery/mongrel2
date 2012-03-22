@@ -48,6 +48,7 @@ int SERVER_ID = 0;
 int HOST_ID = 0;
 
 struct tagbstring CACHE_TTL = bsStatic("cache_ttl");
+struct tagbstring CACHE_CONTROL = bsStatic("cache_control");
 
 int Dir_load(tst_t *settings, tst_t *params)
 {
@@ -71,6 +72,14 @@ int Dir_load(tst_t *settings, tst_t *params)
             check(res != NULL, "Invalid database, couldn't set cache_ttl in directory: %s", base);
             tns_value_destroy(res);
         }
+    }
+
+    if(tst_search(params, bdata(&CACHE_CONTROL), blength(&CACHE_CONTROL))) {
+        const char *cache_control = AST_str(settings, params, "cache_control", VAL_QSTRING);
+
+        res = DB_exec(bdata(&DIR_CACHE_CONTROL_SQL), cache_control);
+        check(res != NULL, "Invalid database, couldn't set cache_control in directory: %s", base);
+        tns_value_destroy(res);
     }
 
     return DB_lastid();

@@ -59,7 +59,7 @@ tns_value_t *default_load_proxy(int proxy_id)
 
 tns_value_t *default_load_dir(int dir_id)
 {
-    const char *DIR_QUERY = "SELECT id, base, index_file, default_ctype, cache_ttl FROM directory WHERE id=%d";
+    const char *DIR_QUERY = "SELECT id, base, index_file, default_ctype, cache_ttl, cache_control FROM directory WHERE id=%d";
     return DB_exec(DIR_QUERY, dir_id);
 }
 

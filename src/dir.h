@@ -77,15 +77,17 @@ typedef struct Dir {
     bstring normalized_base;
     bstring index_file;
     bstring default_ctype;
+    bstring cache_control;
     int cache_ttl;
 } Dir;
 
 Dir *Dir_create(bstring base, bstring index_file,
-                bstring default_ctype, int cache_ttl);
+                bstring default_ctype, int cache_ttl,
+                bstring cache_control);
 
 void Dir_destroy(Dir *dir);
 
-FileRecord *Dir_find_file(bstring path, bstring default_type);
+FileRecord *Dir_find_file(bstring path, bstring default_type, bstring cache_control);
 
 long long int Dir_stream_file(FileRecord *file, Connection *conn);
 

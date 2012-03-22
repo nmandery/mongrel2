@@ -9,7 +9,8 @@ char *test_Dir_find_file()
     bstring ctype = NULL;
 
     FileRecord *file = Dir_find_file(bfromcstr("tests/sample.json"),
-            ctype = bfromcstr("text/plain"));
+            ctype = bfromcstr("text/plain"),
+            bfromcstr("no-cache"));
 
     mu_assert(file != NULL, "Failed to find the file.");
 
@@ -24,7 +25,8 @@ char *test_Dir_find_file_isdir(){
     bstring ctype = NULL;
 
     FileRecord *file = Dir_find_file(bfromcstr("tests/"),
-            ctype = bfromcstr("text/plain"));
+            ctype = bfromcstr("text/plain"),
+            bfromcstr("no-cache"));
 
     mu_assert(file != NULL, "Failed to find the directory.");
     mu_assert(file->is_dir == 1, "Did not recognized it's a directory");
@@ -43,7 +45,8 @@ char *test_Dir_resolve_file()
             bfromcstr("tests/"),
             bfromcstr("sample.html"),
             bfromcstr("test/plain"),
-            0);
+            0,
+            bfromcstr("no-cache"));
     mu_assert(test != NULL, "Failed to make test dir.");
 
     FileRecord *rec = Dir_resolve_file(test, bfromcstr("/"), bfromcstr("/sample.json"));
@@ -64,7 +67,8 @@ char *test_Dir_resolve_file()
             bfromcstr("foobar/"),
             bfromcstr("sample.html"),
             bfromcstr("test/plan"),
-            0);
+            0,
+            bfromcstr("no-cache"));
     mu_assert(test != NULL, "Failed to make the failed dir.");
 
     rec = Dir_resolve_file(test, bfromcstr("/"), bfromcstr("/sample.json"));
@@ -110,7 +114,8 @@ char *test_Dir_serve_file()
             bfromcstr("tests/"),
             bfromcstr("sample.html"),
             bfromcstr("test/plain"),
-            0);
+            0,
+            bfromcstr("no-cache"));
 
     Connection conn = {.iob = NULL};
     int zero_fd = open("/dev/null", O_WRONLY);
@@ -151,6 +156,7 @@ char *test_Dir_serve_big_files(){
     "Content-Type: \r\n"
     "Content-Length: 858993459\r\n"
     "Last-Modified: \r\n"
+    "Cache-Control: \r\n"
     "ETag: \r\n"
     "Server: " VERSION
     "\r\n\r\n";
@@ -160,12 +166,13 @@ char *test_Dir_serve_big_files(){
     "Content-Type: \r\n"
     "Content-Length: 399560397\r\n"
     "Last-Modified: \r\n"
+    "Cache-Control: \r\n"
     "ETag: \r\n"
     "Server: " VERSION
     "\r\n\r\n";
 
-  bstring response_less_1gb = bformat(RESPONSE_FORMAT, "", "", less1gb.st_size, "", "");
-  bstring response_more_1gb = bformat(RESPONSE_FORMAT, "", "", more1gb.st_size, "", "");
+  bstring response_less_1gb = bformat(RESPONSE_FORMAT, "", "", less1gb.st_size, "", "", "");
+  bstring response_more_1gb = bformat(RESPONSE_FORMAT, "", "", more1gb.st_size, "", "", "");
 
   mu_assert(bstrcmp(response_less_1gb, bfromcstr(LESS_1GB)) == 0, "Wrong response headers for <1GB files");
   debug("MORE_1GB=%s\n", MORE_1GB);

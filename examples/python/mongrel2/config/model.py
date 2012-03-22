@@ -178,17 +178,19 @@ class Dir(object):
     index_file = Unicode()
     default_ctype = Unicode()
     cache_ttl = Int(default=0)
+    cache_control = Unicode()
 
-    def __init__(self, base, index_file, default_ctype="text/plain", cache_ttl=0):
+    def __init__(self, base, index_file, default_ctype="text/plain", cache_ttl=0, cache_control="no-cache"):
         super(Dir, self).__init__()
         self.base = unicode(base)
         self.index_file = unicode(index_file)
         self.default_ctype = unicode(default_ctype)
         self.cache_ttl = cache_ttl
+        self.cache_control = unicode(cache_control)
 
     def __repr__(self):
-        return "Dir(base=%r, index_file=%r, default_ctype=%r)" % (
-            self.base, self.index_file, self.default_ctype)
+        return "Dir(base=%r, index_file=%r, default_ctype=%r, cache_control=%r)" % (
+            self.base, self.index_file, self.default_ctype, self.cache_control)
 
 
 
